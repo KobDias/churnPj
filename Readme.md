@@ -100,9 +100,9 @@ gantt
 ├── /docs               # Documentação do projeto
 ├── /data               # Datasets e relatórios
 ├── /src                # Código-fonte
-│   ├── /flask # Back-end (Flask)
+│   ├── /flask          # Back-end (Flask)
 │   │    ├── /templates         
-│   │    ├── /static         # CSS, Javascript
+│   │    ├── /static    # CSS, Javascript
 ├── README.md           # Este arquivo
 └── requirements.txt    # Dependências do Python
 ```
