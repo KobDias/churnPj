@@ -109,11 +109,6 @@ gantt
 
 ---
 
-## 🔗 Links Úteis
-- [Apresentação do Projeto (PDF)](#) *(adicione o link aqui)*  
-- [Mermaid Chart - Cronograma](#) *(opcional)*  
-
----
 
 **Licença**: MIT  
-**Contato**: [equipe@email.com](#) *(adicione o e-mail do grupo)*  
+**Contato**: [kobordias@email.com](#) *(adicione o e-mail do grupo)*  
