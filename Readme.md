@@ -111,4 +111,4 @@ gantt
 
 
 **Licença**: MIT  
-**Contato**: [kobordias@email.com](#) *(adicione o e-mail do grupo)*  
+**Contato**: [kobordias@email.com](#)
