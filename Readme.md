@@ -26,22 +26,6 @@ Dificuldade das empresas em reter clientes em modelos de negócio baseados em as
 | **Dados**     | Pandas, Numpy, R (análise)  |
 | **DevOps**    | Git, GitHub                 |
 
----
-
-## 👥 Equipe
-| Nome                           | Função Principal       |
-|--------------------------------|------------------------|
-| Cauê Souza Aguiar              | Back-end/API           |
-| Enzo Pompilio De Gois          | Front-end              |
-| Henrico Gabriel Vicentini      | Front-end              |
-| Kenji Yuri Mitsuka             | Machine Learning       |
-| Lucia Maria Reis Braga         | Análise de Dados       |
-| Maria Eduarda Pessin Gonçalves | Pesquisa               |
-| Matheus Bargas Rodrigues       | Machine Learning       |
-| Renan Gonçalves Rodrigues      | Coordenação de ML      |
-| Sofhia Kobor Dias              | Full-stack/Integração  |
-
----
 
 ## 📅 Cronograma (Gantt)
 
