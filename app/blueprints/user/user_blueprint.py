@@ -4,13 +4,13 @@ from db import db
 from flask_login import current_user, login_required
 import hashlib
 
-user_blueprint = Blueprint('user', __name__, template_folder='templates', url_prefix='/user')
+user_bp = Blueprint('user', __name__, template_folder='templates', url_prefix='/user')
 
 def hash(txt):
     hashTxt = hashlib.sha256(txt.encode('utf-8'))
     return hashTxt.hexdigest()
 
-@user_blueprint.route('/perfil', methods=['GET', 'POST'])
+@user_bp.route('/perfil', methods=['GET', 'POST'])
 @login_required
 def perfil():
     if request.method == 'POST':

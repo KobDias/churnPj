@@ -1,4 +1,4 @@
-from sqlachemy import Column, Integer, String, DateTime, Float
+from sqlalchemy import DateTime, Integer, String, Column
 from flask_login import UserMixin
 from db import db
 

@@ -1,11 +1,11 @@
 from flask import Flask, render_template, redirect, url_for, request, flash
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
 from db import db
 from models import User, Documentos, Graficos
-from blueprints.auth.auth_blueprint import auth_blueprint
-from blueprints.user.user_blueprint import user_blueprint
-from blueprints.predicao.predicao_blueprint import predicao_blueprint
+from blueprints.auth.auth_blueprint import auth_bp
+from blueprints.user.user_blueprint import user_bp
+from blueprints.predicao.predicao_blueprint import predicao_bp
 
 
 app = Flask(__name__)
@@ -18,9 +18,9 @@ app.secret_key = 'fideliza-secret-key'
 lm.init_app(app)
 db.init_app(app)
 
-app.register_blueprint(auth_blueprint)
-app.register_blueprint(user_blueprint)
-app.register_blueprint(predicao_blueprint)
+app.register_blueprint(auth_bp)
+app.register_blueprint(user_bp)
+app.register_blueprint(predicao_bp)
 
 @lm.user_loader
 def load_user(user_id):
