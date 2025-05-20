@@ -6,13 +6,14 @@ from models import User, Documentos, Graficos
 from blueprints.auth.auth_blueprint import auth_bp
 from blueprints.user.user_blueprint import user_bp
 from blueprints.predicao.predicao_blueprint import predicao_bp
+import os
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///fideliza.db'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 lm = LoginManager(app)
-lm.login_view = 'login'
+lm.login_view = 'auth.login'
 lm.login_message = 'Por favor, faça login para acessar esta página.'
 app.secret_key = 'fideliza-secret-key'
 lm.init_app(app)
@@ -38,4 +39,6 @@ def home():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
+        os.makedirs(os.path.join(app.root_path, '..', 'static', 'uploads', 'user', 'original'), exist_ok=True)
+        os.makedirs(os.path.join(app.root_path, '..', 'static', 'uploads', 'sys', 'graphs'), exist_ok=True)
     app.run(debug=True)

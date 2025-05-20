@@ -15,9 +15,9 @@ class Documentos(db.Model):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, db.ForeignKey('user.id'), nullable=False)
     caminho_origem = Column(String(120), nullable=False)
-    caminho_pred = Column(String(120), nullable=False)
+    caminho_pred = Column(String(120), nullable=True)
     nome_documento = Column(String(120), nullable=False)
-    data_criacao = Column(DateTime, nullable=False)
+    data_criacao = db.Column(db.DateTime, default=db.func.current_timestamp())
     graph = db.relationship('Graficos', backref='documentos')
 
 class Graficos(db.Model):
@@ -25,4 +25,4 @@ class Graficos(db.Model):
     id = Column(Integer, primary_key=True)
     documentos_id = Column(Integer, db.ForeignKey('documentos.id'), nullable=False)
     caminho_graph = Column(String(120), nullable=False)
-    criado_em = Column(DateTime, nullable=False)
+    data_criacao = db.Column(db.DateTime, default=db.func.current_timestamp())

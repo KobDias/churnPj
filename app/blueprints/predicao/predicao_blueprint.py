@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, render_template, request, redirect, url_for
+from flask import Blueprint, current_app, flash, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import FileField, SubmitField
@@ -6,13 +6,13 @@ from db import db
 from werkzeug.utils import secure_filename
 import os
 from datetime import datetime
-# from .processamento import predict, processo
+from .processamento import predict, processo
 from models import Documentos
 import pandas as pd
 import matplotlib.pyplot as plt
 import  base64
 
-predicao_bp = Blueprint('pred', __name__, template_folder='templates', url_prefix='/pred')
+predicao_bp = Blueprint('predicao', __name__, template_folder='templates', url_prefix='/predicao')
 
 ALLOWED_EXTENSIONS = set(['csv'])
 def allowed_file(filename):
@@ -21,6 +21,11 @@ def allowed_file(filename):
 def gerar_grafico(df, nome):
 
     data = pd.read_csv(df)
+
+    if 'SalePrice' not in data.columns:
+        print(f"Coluna 'SalePrice' não encontrada em {df}. Gráfico não será gerado.")
+        return
+
     # Exemplo de gráfico: histograma da coluna 'SalePrice'
     plt.figure(figsize=(10, 6))
     data['SalePrice'].hist(bins=30)
@@ -29,7 +34,9 @@ def gerar_grafico(df, nome):
     plt.ylabel('Frequência')
 
     # Salva o gráfico em um buffer
-    plt.savefig(f'app/static/uploads/graficos/{nome}.png', format='png')
+    graph_dir = os.path.join('app', 'static', 'uploads', 'sys', 'graphs')
+    os.makedirs(graph_dir, exist_ok=True)
+    plt.savefig(os.path.join(graph_dir, f'{nome}.png'), format='png')
 
 
 
@@ -47,22 +54,24 @@ def upload():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            new_filename = f'{filename.rsplit(".", 1)[0]}_{timestamp}.csv'
+            new_filename = f'{filename}.csv'
 
-            file_path = os.path.join('app/static/uploads/original', new_filename)
+            upload_folder = os.path.abspath(
+            os.path.join(current_app.root_path, 'static', 'uploads', 'user', 'original'))
+            os.makedirs(upload_folder, exist_ok=True)  # Garante que o diretório existe
+            file_path = os.path.join(upload_folder, new_filename)
             file.save(file_path)
             
             uploadDoc = Documentos(
                 user_id=current_user.id,
-                caminhoOriginal=file_path,
-                nome_doc=new_filename
+                caminho_origem=file_path,
+                nome_documento=filename
             )
             db.session.add(uploadDoc)
             db.session.commit()
-            print(uploadDoc.doc_id)
+            print(uploadDoc.id)
 
-            return redirect(url_for('pred.views', id=uploadDoc.doc_id)) 
+            return redirect(url_for('predicao.views', id=uploadDoc.id)) 
         # if not ALLOWED_EXTENSIONS, return 'error'
         return 'error'
     #GET
@@ -71,25 +80,23 @@ def upload():
 @predicao_bp.route('/view/<int:id>', methods=['GET', 'POST'])
 @login_required
 def views(id):
-    pass
-    # doc = db.session.query(Documentos).filter_by(doc_id=id).first()
-    # nome = doc.nome_doc.split('_202', 1)[0]
-    # if not doc:
-    #     return 'Documentos não encontrado', 404
-    # if request.method == 'POST':
-    #     caminho = doc.caminhoOriginal
-    #     predicao = predict(caminho)
+    doc = db.session.query(Documentos).filter_by(id=id).first()
+    nome = doc.nome_documento.split('_202', 1)[0]
+    if not doc:
+        return 'Documentos não encontrado', 404
+    predito = doc.caminho_pred
+    if request.method == 'POST':
+        caminho = doc.caminho_origem
+        predicao = predict(caminho)
 
-    #     predito = processo(caminho, predicao, nome)
-
-    #     doc.caminhoPredito = predito
-    #     db.session.commit()
-    #     # add DATA DE PREDICAO se possivel pra ver a att
-    #     return redirect(url_for('pred.views', id=doc.doc_id)) #redireciona para a view do documento
-    # #get
-    # gerar_grafico(doc.caminhoOriginal, nome)
-    # fig = url_for('static', filename=f'uploads/graficos/{nome}.png')
-    # predito = doc.caminhoPredito
-
-    # return render_template('view.html', doc=doc, nome=nome, predito=predito, fig=fig)
+        predito = processo(caminho, predicao, nome)
+        db.session.commit()
+        # add DATA DE PREDICAO se possivel pra ver a att
+        return redirect(url_for('predicao.views', id=doc.id)) #redireciona para a view do documento
+    #get
+    gerar_grafico(doc.caminho_origem, nome)
+    fig = url_for('static', filename=f'uploads/sys/graphs/{nome}.png')
+    if fig:
+        return render_template('view.html', fig=fig, doc=doc, predito=predito, nome=nome)
+    return render_template('view.html', doc=doc, nome=nome, predito=predito)
     
