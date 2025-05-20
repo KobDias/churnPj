@@ -1,0 +1,42 @@
+{% extends 'header.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    {% if current_user.is_authenticated %}
+        <h1 class="text-center mb-4">Olá, {{ current_user.nome }}!</h1>
+        <h1 class="mb-4">Visualizações</h1>
+        <div class="d-flex flex-wrap border border-3 w-100">
+            {% if documentos %}
+                {% for documento in documentos %}
+                    <a href="#">
+                        <div class="card m-2" style="width: 18rem; cursor: pointer;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ documento.nome_doc.split('_202')[0] }}</h5>
+                                <a href="{{ url_for('pred.views', id=documento.doc_id) }}" class="btn btn-primary mt-2">
+                                    Ver detalhes
+                                </a>
+                            </div>
+                        </div>
+                    </a>
+                {% endfor %}
+            {% endif %}
+            <a href="#">
+                <div class="card m-2" style="width: 18rem; cursor: pointer;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title" style="font-size: 3rem;">+</h5>
+                        <a href="{{ url_for('pred.upload') }}">Clique aqui para criar novas visualizações</a>
+                    </div>
+                </div>
+            </a>
+            </div>
+        </div>
+    {% else %}
+        <h1 class="text-center">Seja bem vindo(a) a Fideliza.AI</h1>
+        <p class="text-center mt-4">Nosso sistema serve para ajudar empresas a aumentarem a retenção de clientes por assinatura! Para isso, predizemos baseado em uma sequência de informações o que pode estar diminuindo o churn da sua empresa. Para acessar, é necessário fazer login</p>
+        <div class="col mt-5 text-center">
+            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Login</a>
+            <a class="btn btn-primary" href="{{ url_for('auth.cadastro') }}">Cadastro</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
