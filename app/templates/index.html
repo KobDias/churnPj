@@ -12,7 +12,7 @@
                         <div class="card m-2" style="width: 18rem; cursor: pointer;">
                             <div class="card-body">
                                 <h5 class="card-title">{{ documento.nome_doc.split('_202')[0] }}</h5>
-                                <a href="{{ url_for('pred.views', id=documento.doc_id) }}" class="btn btn-primary mt-2">
+                                <a href="{{ url_for('predicao.views', id=documento.doc_id) }}" class="btn btn-primary mt-2">
                                     Ver detalhes
                                 </a>
                             </div>
@@ -24,7 +24,7 @@
                 <div class="card m-2" style="width: 18rem; cursor: pointer;">
                     <div class="card-body text-center">
                         <h5 class="card-title" style="font-size: 3rem;">+</h5>
-                        <a href="{{ url_for('pred.upload') }}">Clique aqui para criar novas visualizações</a>
+                        <a href="{{ url_for('predicao.upload') }}">Clique aqui para criar novas visualizações</a>
                     </div>
                 </div>
             </a>

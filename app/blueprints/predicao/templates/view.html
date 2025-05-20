@@ -1,0 +1,30 @@
+{% extends 'header.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1>Documento {{nome}} </h1>
+        <h2>Documento carregado:</h2>
+        <a class="btn btn-success" href="{{ url_for('static', filename='uploads/original/' ~ doc.nome_doc) }}" download>
+            Baixar arquivo original
+        </a>
+        <h2>Previsões:</h2>
+        {% if not predito %}
+            <p>Não há previsões disponíveis.</p>
+            <form method="post">
+                <button type="submit" class="btn btn-primary">Prever</button>
+            </form>
+        {% else %}
+            <a class="btn btn-success" href="{{ url_for('static', filename='uploads/preditos/' ~ nome ~ '_predito.csv') }}" download>
+            Baixar predições
+            </a>
+            <form method="post">
+                <button type="submit" class="btn btn-primary">Refazer predições</button>
+            </form>
+
+            <img src="{{ fig }}" alt="Media de Previsões" class="img-fluid mt-3">
+            
+
+        {% endif %}
+
+    </div>
+{% endblock %}

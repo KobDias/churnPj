@@ -1,0 +1,28 @@
+{% extends 'header.html' %}
+
+{% block content %}
+
+<div class="container">
+    <form action="" method="post">
+        <div class="form-group">
+            <label for="nome">Seu Nome</label>
+            <div class="input-group">
+                <input type="text" id="nome" name="nome" required class="form-control" placeholder="Seu Nome">
+            </div>  
+        </div>
+        <div class="form-group">
+            <label for="email">Seu Email</label>
+            <div class="input-group">
+                <input type="email" id="email" name="email" required class="form-control" placeholder="Seu Email">
+            </div>  
+        </div>
+        <div class="form-group">
+            <label for="senha">Senha</label>
+            <input type="password" id="senha" name="senha" class="form-control" placeholder="Sua Senha" required/>
+        </div>
+        
+        <input type="submit" value="Logar" class="btn btn-primary">
+    </form>
+</div>
+
+{% endblock %}

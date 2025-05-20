@@ -1,0 +1,31 @@
+{% extends 'header.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center">Perfil de {{ user.nome }}</h1>
+    
+    <form method="POST">
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" class="form-control" name="nome" value="{{ user.nome }}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" name="email" value="{{ user.email }}" required>
+        </div>
+        <div class="form-group">
+            <label for="senha_atual">Senha Atual:</label>
+            <input type="password" class="form-control" name="senha_atual" required>
+        </div>
+        <div class="form-group">
+            <label for="nova_senha">Nova Senha:</label>
+            <input type="password" class="form-control" name="nova_senha">
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+
+    <div class="mt-4">
+        <a href="{{ url_for('auth.logout') }}" class="btn btn-danger">Sair</a>
+    </div>
+</div>
+{% endblock %}
