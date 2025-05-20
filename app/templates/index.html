@@ -11,8 +11,8 @@
                     <a href="#">
                         <div class="card m-2" style="width: 18rem; cursor: pointer;">
                             <div class="card-body">
-                                <h5 class="card-title">{{ documento.nome_doc.split('_202')[0] }}</h5>
-                                <a href="{{ url_for('predicao.views', id=documento.doc_id) }}" class="btn btn-primary mt-2">
+                                <h5 class="card-title">{{ documento.nome_documento.split('_202')[0] }}</h5>
+                                <a href="{{ url_for('predicao.views', id=documento.id) }}" class="btn btn-primary mt-2">
                                     Ver detalhes
                                 </a>
                             </div>
