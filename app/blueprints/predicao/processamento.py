@@ -17,8 +17,7 @@ def processo(csv_path, y_pred, nome):
 
 
 def predict(csv_path):
-    modelo = joblib.load('app/blueprints/pred/model/knn_model.pkl')
-    scaler = joblib.load('app/blueprints/pred/model/scaler.pkl')
+    modelo = joblib.load('app\blueprints\predicao\static\model.pkl')
     df = pd.read_csv(csv_path)
     
     # Seleciona as colunas usadas no treinamento
