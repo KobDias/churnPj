@@ -1,23 +1,64 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fideliza AI</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+
+    <!-- Fonte Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Cor do banner */
+        .navbar {
+            background-color: #000 !important;
+        }
+
+        /* Links do banner */
+        .navbar .navbar-brand,
+        .navbar .nav-link {
+            color: #fff !important;
+            font-weight: 500;
+        }
+
+        .navbar .nav-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <div class="navbar navbar-expand-lg navbar-light bg-light container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <a class="navbar-brand" href="{{ url_for('home') }}">Fideliza AI</a>
-        <div class="collapse navbar-collapse">
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto mr-3">
-                {% if not current_user.is_authenticated %} <!-- Verifica se o usuário não está autenticado -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('auth.cadastro') }}">Cadastro</a>
-                        </li>
+                {% if not current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.cadastro') }}">Cadastro</a>
+                    </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('user.perfil') }}">Perfil</a>
@@ -26,13 +67,16 @@
                         <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                     </li>
                 {% endif %}
-
             </ul>
         </div>
-    </div>
-    <div class="container mt-4">
+    </nav>
+
+    <!-- Conteúdo principal -->
+    <div class="container mt-5 pt-5">
         {% block content %}{% endblock %}
     </div>
+
+    <!-- Scripts Bootstrap -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
