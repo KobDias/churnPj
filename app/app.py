@@ -39,6 +39,6 @@ def home():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-        os.makedirs(os.path.join(app.root_path, '..', 'static', 'uploads', 'user', 'original'), exist_ok=True)
-        os.makedirs(os.path.join(app.root_path, '..', 'static', 'uploads', 'sys', 'graphs'), exist_ok=True)
+        os.makedirs(os.path.join(app.root_path, 'static', 'uploads', 'user', 'original'), exist_ok=True)
+        os.makedirs(os.path.join(app.root_path, 'static', 'uploads', 'sys', 'graphs'), exist_ok=True)
     app.run(debug=True)

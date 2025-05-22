@@ -53,13 +53,12 @@ def upload():
             return "weee"
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            
-            new_filename = f'{filename}.csv'
+        
 
             upload_folder = os.path.abspath(
             os.path.join(current_app.root_path, 'static', 'uploads', 'user', 'original'))
             os.makedirs(upload_folder, exist_ok=True)  # Garante que o diretório existe
-            file_path = os.path.join(upload_folder, new_filename)
+            file_path = os.path.join(upload_folder, filename)
             file.save(file_path)
             
             uploadDoc = Documentos(
@@ -81,12 +80,12 @@ def upload():
 @login_required
 def views(id):
     doc = db.session.query(Documentos).filter_by(id=id).first()
+    caminho = url_for('static', filename=f'uploads/user/original/{doc.nome_documento}')
     nome = doc.nome_documento.split('_202', 1)[0]
     if not doc:
         return 'Documentos não encontrado', 404
     predito = doc.caminho_pred
     if request.method == 'POST':
-        caminho = doc.caminho_origem
         predicao = predict(caminho)
 
         predito = processo(caminho, predicao, nome)
@@ -94,9 +93,10 @@ def views(id):
         # add DATA DE PREDICAO se possivel pra ver a att
         return redirect(url_for('predicao.views', id=doc.id)) #redireciona para a view do documento
     #get
+    print(caminho)
     gerar_grafico(doc.caminho_origem, nome)
     fig = url_for('static', filename=f'uploads/sys/graphs/{nome}.png')
     if fig:
-        return render_template('view.html', fig=fig, doc=doc, predito=predito, nome=nome)
-    return render_template('view.html', doc=doc, nome=nome, predito=predito)
+        return render_template('view.html', fig=fig, doc=doc, predito=predito, nome=nome, caminho=caminho)
+    return render_template('view.html', doc=doc, nome=nome, predito=predito, caminho=caminho)
     
