@@ -1,0 +1,373 @@
+/* Fonte e estrutura base */
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    color: #333;
+    /* Adicione o padding-top aqui para afastar todo o conteúdo da header fixa */
+    padding-top: 80px; /* Assumindo que sua header tem cerca de 60-70px de altura */
+}
+
+/* Tema escuro automático */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #121212;
+        color: #f0f0f0;
+    }
+
+    /* O container principal agora também é um card escuro */
+    .container { /* Use .container para o card principal do conteúdo */
+        background-color: #1e1e1e; /* Um pouco mais claro que o body */
+        box-shadow: 0 4px 20px rgba(255, 255, 255, 0.05);
+    }
+
+    /* Inputs permanecem brancos no modo escuro */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="file"] { /* Adicionado input[type="file"] para consistência */
+        background-color: #ffffff;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+
+    /* Botões personalizados para o modo escuro */
+    .btn-action,
+    .form-submit,
+    input[type="submit"] {
+        background-color: #0d6efd;
+        color: white;
+        font-weight: 600;
+        font-size: 1.1em;
+        padding: 16px;
+    }
+
+    .btn-action:hover,
+    .form-submit:hover,
+    input[type="submit"]:hover {
+        background-color: #0b5ed7;
+    }
+
+    /* Botão de download no modo escuro */
+    .btn-download-pred {
+        background-color: #28a745; /* Verde para download */
+    }
+
+    .btn-download-pred:hover {
+        background-color: #218838;
+    }
+
+    a {
+        color: #84a9ff;
+    }
+
+    /* O btn-iniciar-link é um link genérico, para links que não são botões de ação */
+    .btn-iniciar-link { /* Certifique-se de que esta classe seja usada onde apropriado, como em links de "Voltar" ou "Cadastre-se" */
+        color: #f0f0f0;
+        border-bottom-color: #f0f0f0;
+    }
+
+    .btn-iniciar-link:hover {
+        color: #bbb;
+        border-color: #bbb;
+    }
+
+    /* Estilos para cards de gráfico no modo escuro */
+    .chart-card {
+        background-color: #222; /* Fundo para cada item de gráfico, um pouco mais escuro */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+    }
+
+    .chart-card h4 {
+        color: var(--white); /* Títulos dos gráficos brancos */
+    }
+
+    .chart-card p {
+        color: #bbb; /* Texto dos gráficos cinza claro */
+    }
+
+    .chart-card img {
+        border: 1px solid #444; /* Borda para as imagens dos gráficos */
+    }
+
+    hr {
+        border-top: 1px solid rgba(255, 255, 255, 0.1); /* Linha divisória no modo escuro */
+    }
+}
+
+
+/* Container principal do conteúdo (substitui .form-box para a view) */
+/* Este .container é mais amplo para acomodar os gráficos lado a lado */
+.container {
+    max-width: 900px; /* Aumentei para 900px para acomodar os gráficos lado a lado */
+    margin: 40px auto; /* Centraliza e adiciona margens superior/inferior */
+    padding: 40px 30px;
+    background-color: #ffffff; /* Fundo claro por padrão (se não for dark mode) */
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: #333; /* Texto escuro por padrão */
+}
+
+/* O .form-box é para formulários de login/cadastro, etc. */
+/* Se a view usa um container com a classe .form-box, o estilo pode ser diferente */
+/* No seu view.html, eu usei .container diretamente como o "card" principal */
+.form-box {
+    max-width: 500px; /* Mantém este mais estreito para formulários simples */
+    margin: 40px auto; /* Centraliza e afasta */
+    padding: 30px 25px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+
+/* Títulos dentro do container */
+.container h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+    color: inherit; /* Herda a cor do container (white no dark, dark no light) */
+}
+
+.container h2 {
+    font-size: 22px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: inherit;
+    text-align: center;
+}
+
+/* Seção de informações (texto, como nome do arquivo) */
+.info-section {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.info-section p {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+/* Grupo de botões (flexbox para layout) */
+.button-group {
+    display: flex;
+    justify-content: center; /* Centraliza os botões */
+    gap: 15px; /* Espaço entre os botões */
+    margin-top: 25px;
+    margin-bottom: 25px;
+    flex-wrap: wrap; /* Para quebrar em linhas menores */
+}
+
+/* Estilo para botões de ação genéricos (download, prever) */
+.btn-action {
+    background-color: #0d6efd;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none; /* Para links que se parecem com botões */
+    display: inline-block; /* Para links que se parecem com botões */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.btn-action:hover {
+    background-color: #0b5ed7;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+}
+
+/* Estilo específico para o botão de download de predição */
+.btn-download-pred {
+    background-color: #28a745; /* Cor verde para download */
+}
+
+.btn-download-pred:hover {
+    background-color: #218838;
+}
+
+
+/* Inputs de texto (já existiam, mantidos) */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="file"] { /* Adicionado input[type="file"] */
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    background-color: #ffffff; /* Fundo branco por padrão */
+    color: #333; /* Texto escuro por padrão */
+}
+
+/* Foco nos inputs */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="file"]:focus {
+    border-color: #0d6efd;
+    outline: none;
+}
+
+/* Botões de submit (já existiam, agora se aplicam também a .form-submit) */
+.form-submit,
+input[type="submit"],
+input.button { /* input.button é um seletor genérico para inputs com type="button" ou class="button" */
+    background-color: #0d6efd;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 6px;
+    width: 100%; /* Ocupa 100% da largura do pai */
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.form-submit:hover,
+input[type="submit"]:hover,
+input.button:hover {
+    background-color: #0b5ed7;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Labels */
+label {
+    font-weight: 500;
+    margin-bottom: 5px;
+    display: block;
+    color: inherit; /* Herda a cor do pai (container ou form-box) */
+}
+
+/* Parágrafos */
+p {
+    margin-top: 1em;
+    text-align: center;
+    color: inherit; /* Herda a cor do pai */
+}
+
+/* Links genéricos */
+a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Link personalizado tipo botão (para "Voltar ao Dashboard" ou "Cadastre-se") */
+.btn-iniciar-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #000; /* Padrão claro */
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 2px solid #000;
+    padding-bottom: 4px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+}
+
+.btn-iniciar-link:hover {
+    color: #333;
+    border-color: #333;
+    text-decoration: none;
+}
+
+/* Linha divisória */
+hr {
+    border-top: 1px solid rgba(0, 0, 0, 0.1); /* Padrão claro */
+    margin: 40px 0;
+}
+
+/* Seção de gráficos */
+.chart-section {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.chart-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.chart-card {
+    flex: 1 1 45%;
+    min-width: 300px;
+    background-color: #f8f8f8; /* Fundo claro para cards de gráfico */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    color: #333; /* Texto escuro dentro do card de gráfico */
+}
+
+.chart-card h4 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.chart-card img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.chart-card p {
+    color: #666;
+    margin-top: 15px;
+    font-size: 0.95em;
+}
+
+
+/* Responsivo para telas pequenas */
+@media (max-width: 768px) {
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
+        margin: 20px auto; /* Menos margem em telas pequenas */
+    }
+
+    .form-box { /* Ajuste para formulários menores em telas pequenas */
+        padding: 25px 20px;
+        margin: 20px auto;
+    }
+
+    .form-submit,
+    input[type="submit"],
+    input.button,
+    .btn-action { /* Botões maiores em telas pequenas */
+        font-size: 1em;
+        padding: 14px;
+        width: 100%; /* Ocupa a largura total */
+    }
+
+    .button-group {
+        flex-direction: column; /* Botões empilhados em telas menores */
+        align-items: center;
+    }
+
+    .chart-card {
+        flex: 1 1 100%; /* Um gráfico por linha em telas menores */
+    }
+}

@@ -2,27 +2,115 @@
 
 {% block content %}
 
+<style>
+  :root {
+    --primary: #0d6efd;
+    --black: #000;
+    --white: #fff;
+    --gray-light: #f5f5f5;
+    --gray-dark: #333;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--gray-light);
+    color: var(--gray-dark);
+    /* Diminuindo padding-top para o container colar no header */
+    padding-top: 60px; 
+  }
+
+  .container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: calc(100vh - 60px);
+    padding: 20px 20px 40px; /* menos espaçamento no topo */
+  }
+
+  .form-box {
+    background-color: var(--black);
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    color: var(--white);
+  }
+
+  .form-box label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .form-box input[type="text"],
+  .form-box input[type="email"],
+  .form-box input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .form-box input:focus {
+    outline: 2px solid var(--primary);
+    background-color: #222;
+    color: var(--white);
+  }
+
+  .form-box input[type="submit"] {
+    background-color: var(--primary);
+    color: var(--white);
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    font-size: 16px;
+    width: 100%;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .form-box input[type="submit"]:hover {
+    background-color: #0b5ed7;
+  }
+</style>
+
 <div class="container">
+  <div class="form-box">
     <form action="" method="post">
-        <div class="form-group">
-            <label for="nome">Seu Nome</label>
-            <div class="input-group">
-                <input type="text" id="nome" name="nome" required class="form-control" placeholder="Seu Nome">
-            </div>  
-        </div>
-        <div class="form-group">
-            <label for="email">Seu Email</label>
-            <div class="input-group">
-                <input type="email" id="email" name="email" required class="form-control" placeholder="Seu Email">
-            </div>  
-        </div>
-        <div class="form-group">
-            <label for="senha">Senha</label>
-            <input type="password" id="senha" name="senha" class="form-control" placeholder="Sua Senha" required/>
-        </div>
-        
-        <input type="submit" value="Logar" class="btn btn-primary">
+      <div class="form-group">
+        <label for="nome">Seu Nome</label>
+        <input type="text" id="nome" name="nome" required placeholder="Seu Nome" />
+      </div>
+
+      <div class="form-group">
+        <label for="email">Seu Email</label>
+        <input type="email" id="email" name="email" required placeholder="Seu Email" />
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required placeholder="Sua Senha" />
+      </div>
+
+      <div class="form-group">
+        <label for="confirm_senha">Confirme a Senha</label>
+        <input type="password" id="confirm_senha" name="confirm_senha" required placeholder="Confirme sua Senha" />
+      </div>
+
+      <input type="submit" value="Cadastrar" />
     </form>
+  </div>
 </div>
 
 {% endblock %}
