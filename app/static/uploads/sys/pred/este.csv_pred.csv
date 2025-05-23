@@ -1,0 +1,6 @@
+Age,Balance,Contract,CreditScore,Dependents,DeviceProtection,EstimatedSalary,Gender,Geography,HasCrCard,InternetService,IsActiveMember,MonthlyCharges,MultipleLines,NumOfProducts,OnlineBackup,OnlineSecurity,PaperlessBilling,Partner,PaymentMethod,PhoneService,RowNumber,SeniorCitizen,StreamingMovies,StreamingTV,TechSupport,Tenure,TotalCharges,gender,tenure,Churn,Probabilidade,Risco
+40,60000,0,600,0,0,50000,0,0,1,0,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0.36,Baixo
+35,80000,0,850,0,0,70000,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,5,0,0,0,0,0.27,Baixo
+50,120000,0,700,0,0,90000,0,0,1,0,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0.34,Baixo
+30,0,0,400,0,0,30000,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,0,0,0,1,0.67,Médio
+45,50000,0,500,0,0,40000,0,0,0,0,1,0,0,2,0,0,0,0,0,0,0,0,0,0,0,8,0,0,0,0,0.22,Baixo
