@@ -84,7 +84,7 @@ def views(id):
 
         agrupado = grupos_pred(df_pred, nome)
         # ... seu código de agrupamento ...
-        agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes', 'Cancelamentos']
+        agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes']
         agrupado['Probabilidade Média (%)'] = (agrupado['Probabilidade Média'] * 100).round(2)
         agrupado = agrupado.drop(columns=['Probabilidade Média'])
 
