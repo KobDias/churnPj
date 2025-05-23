@@ -17,11 +17,18 @@
             <a class="btn btn-success" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_pred.csv') }}" download>
             Baixar predições
             </a>
+            <a class="btn btn-success" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_grupos_risco.csv') }}" download>
+            Baixar relatórios de grupos de risco
+            </a>
             <form method="post">
                 <button type="submit" class="btn btn-primary">Refazer predições</button>
             </form>
 
-            <img src="{{ fig }}" alt="Media de Previsões" class="img-fluid mt-3">
+            <h2>Gráficos:</h2>
+            <h3>O que mais impacta seu churn</h3>
+            <img src="{{ fig_importance }}" alt="Media de Previsões" class="img-fluid mt-3">
+            <h3>Grupos de Risco</h3>
+            <img src="{{ fig_riscos }}" alt="Media de Previsões" class="img-fluid mt-3">
             
 
         {% endif %}
