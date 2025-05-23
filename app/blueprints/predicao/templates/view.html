@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container mt-5">
-        <h1>Documento {{nome}} </h1>
+        <h1>Documento {{nome.split('_', 1)[1].replace('_', ' ')}} </h1>
         <h2>Documento carregado:</h2>
         <a class="btn btn-success" href="{{ url_for('static', filename='uploads/user/original/' ~ doc.nome_documento ~ '.csv')}}" download>
             Baixar arquivo original
@@ -28,7 +28,7 @@
             <h3>O que mais impacta seu churn</h3>
             <img src="{{ fig_importance }}" alt="Media de Previsões" class="img-fluid mt-3">
             <h3>Grupos de Risco</h3>
-            <img src="{{ fig_riscos }}" alt="Media de Previsões" class="img-fluid mt-3">
+            <img src="{{ fig_riscos }}" alt="Grupo de Riscos" class="img-fluid mt-3">
             
 
         {% endif %}

@@ -62,12 +62,18 @@ def gerar_grafico(df_pred, nome, model, columns):
 # Função para pré-processar um DataFrame
 
 def preprocess_input(df, columns):
-    for col in df.columns:
-        if df[col].dtype == 'object':
+    numeric_cols = [col for col in columns if any(df.columns.str.fullmatch(col))]
+    # Tente converter para numérico as que existem no input
+    for col in numeric_cols:
+        if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
-        cat_cols = df.select_dtypes(include='object').columns
-        df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
-        df = df.reindex(columns=columns, fill_value=0)
+
+    # Não converta para numérico!
+    cat_cols = df.select_dtypes(include='object').columns
+    df[cat_cols] = df[cat_cols].astype(str)
+    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
+    df = df.reindex(columns=columns, fill_value=0)
+    
     return df
 
 def processa_modelo(input_df):
@@ -83,9 +89,18 @@ def grupos_pred(df_pred, nome):
     col_idade = [col for col in df_pred.columns if 'age' in col.lower()]
 
     if col_genero:
-        df_pred['Sexo'] = df_pred[col_genero[0]].apply(lambda x: 'Homem' if x == 1 else 'Mulher')
+        def map_sexo(x):
+            x_str = str(x).strip().lower()
+            if x_str in ['1', 'm', 'male', 'masculino']:
+                return 'Homem'
+            if x_str in ['0', 'f', 'female', 'feminino']:
+                return 'Mulher'
+            return 'Desconhecido'
+        df_pred['Sexo'] = df_pred[col_genero[0]].apply(map_sexo)
+        print(df_pred[col_genero[0]].unique())
+        print(df_pred['Sexo'].value_counts())
     else:
-        df_pred['Sexo'] = 'Desconhecido'
+            df_pred['Sexo'] = 'Desconhecido'
     if col_idade:
         df_pred['Idade'] = df_pred[col_idade[0]].astype(int)
         df_pred['Faixa Etária'] = pd.cut(df_pred['Idade'], bins=[17, 30, 45, 60, 120],
@@ -103,5 +118,5 @@ def grupos_pred(df_pred, nome):
     agrupado = agrupado.drop(columns=['Probabilidade Média'])
 
     # Salvar para download
-    agrupado.to_csv(f'app/static/uploads/sys/pred/{nome}_grupos_risco.csv', index=False)
+    agrupado.to_csv(f'app/static/uploads/sys/pred/{nome}_grupos_risco.csv', index=False, encoding='utf-8')
     return agrupado

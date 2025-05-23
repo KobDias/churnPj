@@ -17,9 +17,7 @@ df_telco['Churn'] = df_telco['Churn'].apply(lambda x: 1 if str(x).lower() in ['y
 # Função para pré-processar um DataFrame
 def preprocess(df, id_columns=[]):
     df = df.drop(columns=id_columns, errors='ignore')
-    for col in df.columns:
-        if df[col].dtype == 'object':
-            df[col] = pd.to_numeric(df[col], errors='coerce')
+    # Remova o for que converte para numérico!
     df = df.dropna(thresh=int(len(df.columns) * 0.7))
     cat_cols = df.select_dtypes(include='object').columns
     df = pd.get_dummies(df, columns=cat_cols, drop_first=True)

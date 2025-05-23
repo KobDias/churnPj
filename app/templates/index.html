@@ -11,7 +11,7 @@
                     <a href="#">
                         <div class="card m-2" style="width: 18rem; cursor: pointer;">
                             <div class="card-body">
-                                <h5 class="card-title">{{ documento.nome_documento.split('_202')[0] }}</h5>
+                                <h5 class="card-title">{{ "Documento " ~ documento.nome_documento.split('_', 1)[1].replace('_', ' ') }}</h5>
                                 <a href="{{ url_for('predicao.views', id=documento.id) }}" class="btn btn-primary mt-2">
                                     Ver detalhes
                                 </a>

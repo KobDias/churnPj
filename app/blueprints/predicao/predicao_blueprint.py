@@ -95,7 +95,7 @@ def views(id):
 
         df_pred = gerar_df_pred(X, preds, probs)
         pred_path = os.path.join('app', 'static', 'uploads', 'sys', 'pred', f'{nome}_pred.csv')
-        df_pred.to_csv(pred_path, index=False)
+        df_pred.to_csv(pred_path, index=False, encoding='utf-8')
         doc.caminho_pred = pred_path
 
         agrupado = grupos_pred(df_pred, nome)
@@ -105,7 +105,7 @@ def views(id):
         agrupado = agrupado.drop(columns=['Probabilidade Média'])
 
         # Salvar para download
-        agrupado.to_csv(f'app/static/uploads/sys/pred/{nome}_grupos_risco.csv', index=False)
+        agrupado.to_csv(f'app/static/uploads/sys/pred/{nome}_grupos_risco.csv', index=False, encoding='utf-8')
 
         riscos_path = os.path.join('app', 'static', 'uploads', 'sys', 'pred', f'{nome}_grupos_risco.csv')
         doc.caminho_grupos = riscos_path
@@ -113,11 +113,12 @@ def views(id):
         db.session.commit()
 
         gerar_grafico(df_pred, nome, model, columns)
-        return redirect(url_for('predicao.views', id=doc.id, df=df_pred)) #redireciona para a view do documento
+        return redirect(url_for('predicao.views', id=doc.id)) #redireciona para a view do documento
     #get
+    print(nome)
     fig_importance = url_for('static', filename=f'uploads/sys/graphs/{nome}_importante.png')
-    fig_risco = url_for('static', filename=f'uploads/sys/graphs/{nome}_riscos.png')
-    if fig_importance and fig_risco:
-        return render_template('view.html', doc=doc, predito=predito, nome=nome, caminho=caminho, fig_importance=fig_importance, fig_risco=fig_risco)
+    fig_riscos = url_for('static', filename=f'uploads/sys/graphs/{nome}_riscos.png')
+    if fig_importance and fig_riscos:
+        return render_template('view.html', doc=doc, predito=predito, nome=nome, caminho=caminho, fig_importance=fig_importance, fig_riscos=fig_riscos)
     return render_template('view.html', doc=doc, nome=nome, predito=predito, caminho=caminho)
     
