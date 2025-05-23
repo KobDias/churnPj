@@ -4,7 +4,7 @@
     <div class="container mt-5">
         <h1>Documento {{nome}} </h1>
         <h2>Documento carregado:</h2>
-        <a class="btn btn-success" href="{{ url_for('static', filename='uploads/user/original/' ~ doc.nome_documento)}}" download>
+        <a class="btn btn-success" href="{{ url_for('static', filename='uploads/user/original/' ~ doc.nome_documento ~ '.csv')}}" download>
             Baixar arquivo original
         </a>
         <h2>Previsões:</h2>
@@ -14,7 +14,7 @@
                 <button type="submit" class="btn btn-primary">Prever</button>
             </form>
         {% else %}
-            <a class="btn btn-success" href="{{ caminho }}" download>
+            <a class="btn btn-success" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_pred.csv') }}" download>
             Baixar predições
             </a>
             <form method="post">
