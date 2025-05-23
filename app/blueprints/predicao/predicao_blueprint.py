@@ -32,15 +32,18 @@ def upload():
             return "weee"
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-        
+            filename = f"{current_user.id}_{filename}"
 
             upload_folder = os.path.join('app', 'static', 'uploads', 'user', 'original')
-            print(upload_folder)
             os.makedirs(upload_folder, exist_ok=True)  # Garante que o diretório existe
             file_path = os.path.join(upload_folder, filename)
             file.save(file_path)
             new_filename = filename.split('.csv', 1)[0]
-            
+
+            existing_doc = Documentos.query.filter_by(nome_documento=new_filename, user_id=current_user.id).first()
+            if existing_doc:
+                flash('Arquivo já existe')
+                return 'error'
             uploadDoc = Documentos(
                 user_id=current_user.id,
                 caminho_origem=file_path,
@@ -48,7 +51,6 @@ def upload():
             )
             db.session.add(uploadDoc)
             db.session.commit()
-            print(uploadDoc.id)
 
             return redirect(url_for('predicao.views', id=uploadDoc.id)) 
         # if not ALLOWED_EXTENSIONS, return 'error'
@@ -62,11 +64,25 @@ def views(id):
     doc = db.session.query(Documentos).filter_by(id=id).first()
     caminho = doc.caminho_origem
     nome = doc.nome_documento.split('.csv', 1)[0]
-    if not doc:
-        return 'Documentos não encontrado', 404
+    if not doc or doc.user_id != current_user.id:
+        return 'Documentos não encontrado ou você não tem autorização para acessa-lo', 404
     predito = doc.caminho_pred
+    risco = doc.caminho_grupos
     if request.method == 'POST':
-        print("submittaram")
+
+        if predito or risco:
+            if os.path.exists(predito):
+                os.remove(predito)
+            if os.path.exists(risco):
+                os.remove(risco)
+            nome_base = nome
+            grafico_Importancia_path = os.path.join('app', 'static', 'uploads', 'sys', 'graphs', f'{nome_base}_importante.png')
+            grafico_Risco_path = os.path.join('app', 'static', 'uploads', 'sys', 'graphs', f'{nome_base}_riscos.png')
+            if os.path.exists(grafico_Importancia_path):
+                os.remove(grafico_Importancia_path)
+            if os.path.exists(grafico_Risco_path):
+                os.remove(grafico_Risco_path)
+
         input_df = pd.read_csv(caminho)
         data = joblib.load('app/blueprints/predicao/modelo_churn_rf_bank_telco.pkl')
         model = data['model']
@@ -80,10 +96,10 @@ def views(id):
         df_pred = gerar_df_pred(X, preds, probs)
         pred_path = os.path.join('app', 'static', 'uploads', 'sys', 'pred', f'{nome}_pred.csv')
         df_pred.to_csv(pred_path, index=False)
-        doc.caminho_pred = pred_path        
+        doc.caminho_pred = pred_path
 
         agrupado = grupos_pred(df_pred, nome)
-        # ... seu código de agrupamento ...
+        
         agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes']
         agrupado['Probabilidade Média (%)'] = (agrupado['Probabilidade Média'] * 100).round(2)
         agrupado = agrupado.drop(columns=['Probabilidade Média'])
@@ -91,14 +107,17 @@ def views(id):
         # Salvar para download
         agrupado.to_csv(f'app/static/uploads/sys/pred/{nome}_grupos_risco.csv', index=False)
 
+        riscos_path = os.path.join('app', 'static', 'uploads', 'sys', 'pred', f'{nome}_grupos_risco.csv')
+        doc.caminho_grupos = riscos_path
+
         db.session.commit()
 
         gerar_grafico(df_pred, nome, model, columns)
         return redirect(url_for('predicao.views', id=doc.id, df=df_pred)) #redireciona para a view do documento
     #get
-    print(caminho)
-    fig = url_for('static', filename=f'uploads/sys/graphs/{nome}.png')
-    if fig:
-        return render_template('view.html', fig=fig, doc=doc, predito=predito, nome=nome, caminho=caminho)
+    fig_importance = url_for('static', filename=f'uploads/sys/graphs/{nome}_importante.png')
+    fig_risco = url_for('static', filename=f'uploads/sys/graphs/{nome}_riscos.png')
+    if fig_importance and fig_risco:
+        return render_template('view.html', doc=doc, predito=predito, nome=nome, caminho=caminho, fig_importance=fig_importance, fig_risco=fig_risco)
     return render_template('view.html', doc=doc, nome=nome, predito=predito, caminho=caminho)
     
