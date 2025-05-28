@@ -5,7 +5,7 @@
     <h1>Documento {{nome}} </h1>
     <div class="content-section">
         <h2>Documento carregado:</h2>
-        <a class="btn btn-success" href="{{ url_for('static', filename='uploads/user/original/' ~ doc.nome_doc)}}" download>
+        <a class="btn btn-success" href="{{ url_for('static', filename='uploads/user/original/' ~ doc.nome_documento ~ '.csv')}}" download>
             Baixar arquivo original
         </a>
     </div>
@@ -18,14 +18,21 @@
                 <button type="submit" class="btn btn-primary">Prever</button>
             </form>
         {% else %}
-            <a class="btn btn-success" href="{{ url_for('static', filename='uploads/sys/dfPredito/' ~ nome ~ '_predito.csv') }}" download>
+            <a class="btn btn-success" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_pred.csv') }}" download>
             Baixar predições
+            </a>
+            <a class="btn btn-success" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_grupos_risco.csv') }}" download>
+            Baixar relatórios de grupos de risco
             </a>
             <form method="post">
                 <button type="submit" class="btn btn-primary">Refazer predições</button>
             </form>
 
-            <img src="{{ fig }}" alt="Media de Previsões" class="img-fluid mt-3">
+            <h2>Gráficos:</h2>
+            <h3>O que mais impacta seu churn</h3>
+            <img src="{{ fig_importance }}" alt="Media de Previsões" class="img-fluid mt-3">
+            <h3>Grupos de Risco</h3>
+            <img src="{{ fig_riscos }}" alt="Media de Previsões" class="img-fluid mt-3">
             
         {% endif %}
     </div>

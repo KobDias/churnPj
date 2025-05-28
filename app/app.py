@@ -1,6 +1,6 @@
-from flask import Flask, render_template, redirect, url_for, request, flash
+from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, UserMixin, current_user, login_user, login_required, logout_user
+from flask_login import LoginManager, current_user
 from db import db
 from models import User, Documentos, Graficos
 from blueprints.auth.auth_blueprint import auth_bp
@@ -41,4 +41,5 @@ if __name__ == '__main__':
         db.create_all()
         os.makedirs(os.path.join(app.root_path, 'static', 'uploads', 'user', 'original'), exist_ok=True)
         os.makedirs(os.path.join(app.root_path, 'static', 'uploads', 'sys', 'graphs'), exist_ok=True)
+        os.makedirs(os.path.join(app.root_path, 'static', 'uploads', 'sys', 'pred'), exist_ok=True)
     app.run(debug=True)
