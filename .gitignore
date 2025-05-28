@@ -1,1 +1,8 @@
 __pycache__/
+*.csv
+*.zip
+*.h5
+*.pkl
+*.pt
+*.sav
+uploads/
