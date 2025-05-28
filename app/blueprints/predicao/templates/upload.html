@@ -1,12 +1,22 @@
 {% extends 'header.html' %}
 
 {% block content %}
-    <div class="container mt-5">
-        <h1>Envio de documentos</h1>
-        <form action="{{ url_for('predicao.upload')}}" method="POST" enctype="multipart/form-data">
-            <label for="file">Escolha um documento</label>
-            <input type="file" id="file" name="file"><br>
-            <button type="submit">Enviar</button>
-        </form>
+<div class="container mt-5" style="max-width: 600px;">
+    <h1 class="text-center mb-4 text-primary fw-bold">Envio de Documentos</h1>
+
+    <form action="{{ url_for('predicao.upload') }}" method="POST" enctype="multipart/form-data" class="shadow p-4 rounded bg-white">
+        <div class="mb-3">
+            <label for="file" class="form-label">Escolha um documento (.csv)</label>
+            <input type="file" class="form-control" id="file" name="file" required>
+        </div>
+
+        <div class="d-grid">
+            <button type="submit" class="btn btn-primary rounded-pill">Enviar</button>
+        </div>
+    </form>
+
+    <div class="mt-4 text-center">
+        <a href="{{ url_for('home') }}" class="btn btn-outline-secondary rounded-pill px-4">Voltar</a>
     </div>
+</div>
 {% endblock %}

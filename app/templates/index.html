@@ -1,42 +1,70 @@
 {% extends 'header.html' %}
 
 {% block content %}
+<style>
+    body {
+        background: linear-gradient(to bottom, #dfefff 0%, #b6d0ff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .welcome-section {
+        background: url('/static/images/whale-illustration.png') no-repeat center center;
+        background-size: cover;
+        padding: 100px 20px;
+        color: #0c1a2b;
+    }
+    .card {
+        border-radius: 20px;
+        transition: transform 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+    .btn-primary {
+        background-color: #1e3a8a;
+        border-color: #1e3a8a;
+        border-radius: 12px;
+    }
+    .btn-primary:hover {
+        background-color: #1c2f6b;
+    }
+</style>
+
 <div class="container mt-5">
     {% if current_user.is_authenticated %}
-        <h1 class="text-center mb-4">Olá, {{ current_user.nome }}!</h1>
-        <h1 class="mb-4">Visualizações</h1>
-        <div class="d-flex flex-wrap border border-3 w-100">
+        <div class="text-center mb-5">
+            <h1 class="fw-bold">Olá, {{ current_user.nome }}!</h1>
+            <h4 class="text-muted">Visualizações disponíveis:</h4>
+        </div>
+        <div class="d-flex flex-wrap justify-content-center gap-4">
             {% if documentos %}
                 {% for documento in documentos %}
-                    <a href="#">
-                        <div class="card m-2" style="width: 18rem; cursor: pointer;">
-                            <div class="card-body">
-                                <h5 class="card-title">{{ "Documento " ~ documento.nome_documento.split('_', 1)[1].replace('_', ' ') }}</h5>
-                                <a href="{{ url_for('predicao.views', id=documento.id) }}" class="btn btn-primary mt-2">
-                                    Ver detalhes
-                                </a>
-                            </div>
+                    <div class="card shadow-sm" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ (documento.nome_documento.split('_202')[0]).split('_', 1)[1].replace('_', ' ') }}</h5>
+                            <a href="{{ url_for('predicao.views', id=documento.id) }}" class="btn btn-primary mt-3 w-100">
+                                Ver detalhes
+                            </a>
                         </div>
-                    </a>
+                    </div>
                 {% endfor %}
             {% endif %}
-            <a href="#">
-                <div class="card m-2" style="width: 18rem; cursor: pointer;">
-                    <div class="card-body text-center">
-                        <h5 class="card-title" style="font-size: 3rem;">+</h5>
-                        <a href="{{ url_for('predicao.upload') }}">Clique aqui para criar novas visualizações</a>
-                    </div>
+            <div class="card border-dashed text-center" style="width: 18rem;">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center" style="height: 100%;">
+                    <h1 style="font-size: 3rem; color: #1e3a8a;">+</h1>
+                    <a href="{{ url_for('predicao.upload') }}" class="btn btn-outline-primary mt-3">Criar nova visualização</a>
                 </div>
-            </a>
             </div>
         </div>
     {% else %}
-        <h1 class="text-center">Seja bem vindo(a) a Fideliza.AI</h1>
-        <p class="text-center mt-4">Nosso sistema serve para ajudar empresas a aumentarem a retenção de clientes por assinatura! Para isso, predizemos baseado em uma sequência de informações o que pode estar diminuindo o churn da sua empresa. Para acessar, é necessário fazer login</p>
-        <div class="col mt-5 text-center">
-            <a class="btn btn-primary" href="{{ url_for('auth.login') }}">Login</a>
-            <a class="btn btn-primary" href="{{ url_for('auth.cadastro') }}">Cadastro</a>
-        </div>
+        <section class="welcome-section text-center">
+            <h1 class="display-5 fw-bold">Seja bem-vindo(a) à Fideliza.AI</h1>
+            <p class="lead mt-3 mb-4">Nosso sistema ajuda empresas a aumentar a retenção de clientes por assinatura com análises preditivas sobre churn.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a class="btn btn-primary px-4" href="{{ url_for('auth.login') }}">Login</a>
+                <a class="btn btn-outline-primary px-4" href="{{ url_for('auth.cadastro') }}">Cadastro</a>
+            </div>
+        </section>
     {% endif %}
 </div>
 {% endblock %}
