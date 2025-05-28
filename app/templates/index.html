@@ -67,4 +67,172 @@
         </section>
     {% endif %}
 </div>
+
+<style>
+    :root {
+        --primary: #0d6efd;
+        --black: #000;
+        --white: #fff;
+        --gray-light: #f5f5f5;
+        --gray-dark: #333;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: var(--gray-light);
+        color: var(--white);
+        padding-top: 80px;
+    }
+
+    .container {
+        max-width: 960px; /* Mantém a largura que permite 3 cards por linha + espaçamento */
+        margin: 60px auto;
+        padding: 40px 20px;
+        background-color: var(--black);
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        color: var(--white);
+    }
+
+    .container h1,
+    .container h2 {
+        color: var(--white);
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .container h2 {
+        text-align: left;
+        margin-left: 10px;
+    }
+
+    .document-grid-wrapper {
+        border: 1px solid #333;
+        border-radius: 8px;
+        padding: 10px;
+        /* Flexbox para o wrapper, se necessário, mas o grid interno é o que importa */
+    }
+
+    .document-grid {
+        display: flex;
+        flex-wrap: wrap; /* Essencial para quebrar as linhas */
+        gap: 20px; /* Espaço entre os cards */
+        justify-content: center; /* Centraliza a linha de cards quando não preenche 3 */
+        /* width: 100%; removido para deixar o flexbox gerenciar a largura */
+    }
+
+    .document-card-link {
+        text-decoration: none;
+        color: inherit;
+        /* flex-basis para definir a largura base, permitindo 3 colunas com gap */
+        flex: 1 1 calc(33.333% - 20px); /* 33.333% para 3 colunas, subtraindo o gap */
+        max-width: calc(33.333% - 20px); /* Garante que não exceda 3 por linha */
+        min-width: 250px; /* Largura mínima para cards em telas menores */
+    }
+
+    @media (max-width: 850px) { /* Ajuste para 2 colunas em telas menores */
+        .document-card-link {
+            flex: 1 1 calc(50% - 20px);
+            max-width: calc(50% - 20px);
+        }
+    }
+
+    @media (max-width: 580px) { /* Ajuste para 1 coluna em telas muito pequenas */
+        .document-card-link {
+            flex: 1 1 100%;
+            max-width: 100%;
+        }
+    }
+
+    .card {
+        background-color: #222;
+        border: 1px solid #444;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        cursor: pointer;
+        color: var(--white);
+        height: 150px;
+        display: flex;
+        flex-direction: column; /* Para empilhar título e botão */
+        align-items: center;
+        justify-content: center;
+        width: 100%; /* Ocupa a largura total do flex-basis */
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    .card-body {
+        padding: 20px;
+        text-align: center;
+        flex-grow: 1; /* Permite que o corpo do card cresça */
+        display: flex; /* Para centralizar o conteúdo dentro do body */
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+        color: var(--white);
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 8px 15px;
+        border-radius: 6px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: var(--primary);
+        color: var(--white);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #0b5ed7;
+    }
+
+    .add-new-card {
+        background-color: #1a1a1a;
+        border: 1px dashed #666;
+    }
+
+    .add-new-card .card-title {
+        font-size: 4rem;
+        line-height: 1;
+        margin-bottom: 5px;
+        color: #888;
+    }
+
+    .add-new-card p {
+        font-size: 1rem;
+        color: #aaa;
+    }
+
+    /* Estilos para a parte de "Bem-vindo(a) à Fideliza.AI" */
+    .welcome-text {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 30px;
+        color: var(--white);
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .btn-lg {
+        padding: 15px 30px;
+        font-size: 1.25rem;
+    }
+</style>
 {% endblock %}
