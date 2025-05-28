@@ -26,6 +26,86 @@ Dificuldade das empresas em reter clientes em modelos de negócio baseados em as
 | **Dados**     | Pandas, Numpy, R (análise)  |
 | **DevOps**    | Git, GitHub                 |
 
+## Como Rodar
+
+**Pré-requisitos**
+
+Antes de começar, você precisará ter instalado:
+
+- Python 3.x
+- pip (gerenciador de pacotes do Python)
+- Git (opcional, para clonar o repositório)
+
+  
+
+**Clone o Repositório**
+
+Para obter uma cópia do projeto, você pode clonar o repositório usando o seguinte comando:
+
+```bash
+git clone https://github.com/KobDias/churnPj.git
+```
+
+  
+
+**Instale as Dependências**
+
+Navegue até o diretório do projeto e instale as dependências necessárias usando o arquivo `requirements.txt`:
+
+```bash
+cd churnPj
+pip install -r requirements.txt
+```
+
+  
+
+**Estrutura do Projeto**
+
+O projeto possui a seguinte estrutura de diretórios:
+
+```
+/projeto-churn-prediction
+├── /docs               # Documentação do projeto
+├── /data               # Datasets e relatórios
+├── /src                # Código-fonte
+│   ├── /flask          # Back-end (Flask)
+│   │    ├── /templates
+│   │    ├── /static    # CSS, Javascript
+├── README.md           # Este arquivo
+└── requirements.txt    # Dependências do Python
+```
+
+  
+
+**Executando o Projeto**
+
+Para iniciar o servidor Flask, execute o seguinte comando no diretório `/src/flask`:
+
+```bash
+python app.py
+```
+
+O aplicativo estará disponível em `http://127.0.0.1:5000/`.
+
+  
+
+**Acessando o Dashboard**
+
+Após iniciar o servidor, você pode acessar o dashboard interativo através do seu navegador, utilizando o endereço:
+
+```
+http://127.0.0.1:5000/
+```
+
+  
+
+**Contato**
+
+Para mais informações ou dúvidas, entre em contato:
+
+- Email: kobordias@email.com
+
+
 
 ## 📅 Cronograma (Gantt)
 
