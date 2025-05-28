@@ -5,11 +5,11 @@
     <h1 class="text-center text-primary fw-bold mb-4">Detalhes do Documento</h1>
 
     <div class="shadow p-4 bg-white rounded">
-        <h4 class="mb-3">Documento: <span class="text-dark">{{ nome.split('_', 1)[1].replace('_', ' ') }}</span></h4>
+        <h4 class="mb-3">Documento: <span class="text-dark">{{ nome.split('_', 1)[1].replace('_', ' ').replace('-', ' ') }}</span></h4>
 
         <div class="mb-4">
             <h5>Documento carregado:</h5>
-            <a class="btn btn-outline-success rounded-pill" 
+            <a class="btn btn-outline-success rounded-pill w-100" 
                href="{{ url_for('static', filename='uploads/user/original/' ~ doc.nome_documento ~ '.csv')}}" 
                download>
                 📎 Baixar arquivo original
@@ -19,30 +19,56 @@
         <div class="mb-4">
             <h5>Previsões:</h5>
 
+            <div class="alert alert-info mb-4">
+                <strong>Para gerar predições:</strong>
+                <ul class="mb-2">
+                    <li>
+                        O dataset <b>deve conter</b> a coluna de churn com um dos seguintes nomes:<br>
+                        <span class="badge bg-primary text-light me-1">churn</span>
+                        <span class="badge bg-primary text-light me-1">cancelado</span>
+                        <span class="badge bg-primary text-light me-1">cancelou</span>
+                        <span class="badge bg-primary text-light me-1">cancelamento</span>
+                        <span class="badge bg-primary text-light me-1">saida</span>
+                        <span class="badge bg-primary text-light">exited</span>
+                    </li>
+                    <li>
+                        Para maior acurácia, colunas opcionais incluem:
+                        <ul class="mt-1">
+                            <li><span class="badge bg-secondary me-1">idade</span> <span class="badge bg-secondary me-1">age</span> <span class="badge bg-secondary">idade_cliente</span></li>
+                            <li><span class="badge bg-secondary me-1">sexo</span> <span class="badge bg-secondary me-1">genero</span> <span class="badge bg-secondary">gender</span></li>
+                            <li><span class="badge bg-secondary me-1">salario</span> <span class="badge bg-secondary">EstimatedSalary</span></li>
+                            <li><span class="badge bg-secondary">mensalidade</span> <span class="badge bg-secondary">MonthlyCharges</span></li>
+                            <li><span class="badge bg-secondary">tempo</span> <span class="badge bg-secondary">tenure</span></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
             {% if not predito %}
                 <p class="text-muted">Nenhuma predição disponível ainda.</p>
                 <form method="post">
-                    <button type="submit" class="btn btn-primary rounded-pill">Prever</button>
+                    <button type="submit" class="btn btn-primary rounded-pill w-100">Prever</button>
                 </form>
             {% else %}
-                <div class="mb-3">
+                <div class="mb-3 d-flex gap-2">
                     <a class="btn btn-outline-success rounded-pill" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_pred.csv') }}" download>
                         📊 Baixar predições
                     </a>
-                </div>
-                <div class="mb-3">
                     <a class="btn btn-outline-success rounded-pill" href="{{ url_for('static', filename='uploads/sys/pred/' ~ nome ~ '_grupos_risco.csv') }}" download>
                         📊 Baixar Grupos de Risco
                     </a>
                 </div>
-
-                <form method="post" class="mb-4">
-                    <button type="submit" class="btn btn-warning rounded-pill">Refazer predições</button>
-                </form>
-
-                <div class="text-center">
-                    <img src="{{ fig }}" alt="Média de Previsões" class="img-fluid rounded shadow">
+                <div class="row">
+                    <form method="post" class="mb-4">
+                        <button type="submit" class="btn btn-warning rounded-pill w-100">Refazer predições</button>
+                    </form>
                 </div>
+                
+
+                <h3>O que mais impacta seu churn</h3>
+                    <img src="{{ fig_importance }}" alt="Media de Previsões" class="img-fluid mt-3">
+                    <h3>Grupos de Risco</h3>
+                    <img src="{{ fig_riscos }}" alt="Grupo de Riscos" class="img-fluid mt-3">
             {% endif %}
         </div>
 

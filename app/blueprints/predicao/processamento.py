@@ -8,7 +8,7 @@ def classificar_risco(prob):
     if prob >= 0.7:
         return 'Alto'
     elif prob >= 0.4:
-        return 'Médio'
+        return 'Medio'
     else:
         return 'Baixo'
 def gerar_df_pred(X, preds, probs):
@@ -39,8 +39,8 @@ def gerar_grafico(df_pred, nome, model, columns):
 
     plt.figure(figsize=(10, 6))
     sns.barplot(x='importance', y='feature', data=feat_importances)
-    plt.title('Importância das Features')
-    plt.xlabel('Importância (%)')
+    plt.title('Importancia das Features')
+    plt.xlabel('Importancia (%)')
     plt.ylabel('Features')
     plt.tight_layout()
     fig_path_Importance = os.path.join('app', 'static', 'uploads', 'sys', 'graphs', f'{nome}_importante.png')
@@ -63,57 +63,51 @@ def gerar_grafico(df_pred, nome, model, columns):
 
 def preprocess_input(df, columns):
     numeric_cols = [col for col in columns if any(df.columns.str.fullmatch(col))]
-    # Tente converter para numérico as que existem no input
     for col in numeric_cols:
         if col in df.columns:
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
-    # Não converta para numérico!
     cat_cols = df.select_dtypes(include='object').columns
     df[cat_cols] = df[cat_cols].astype(str)
     df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
     df = df.reindex(columns=columns, fill_value=0)
-    
     return df
 
 def processa_modelo(input_df):
-    data = joblib.load('modelo_churn_rf_bank_telco.pkl')
+    data = joblib.load('app/blueprints/predicao/modelo_churn_rf_bank_telco.pkl')
     model = data['model']
     columns = data['columns']
     X = preprocess_input(input_df, columns)
-    return model.predict(X)
+    preds = model.predict(X)
+    probs = model.predict_proba(X)[:, 1]
+    return preds, probs
 
-def grupos_pred(df_pred, nome):
-    # Detectar colunas de sexo e idade
-    col_genero = [col for col in df_pred.columns if 'gender' in col.lower()]
-    col_idade = [col for col in df_pred.columns if 'age' in col.lower()]
+def grupos_pred(df_resultado, nome):
+    df_resultado['Risco'] = df_resultado['Probabilidade'].apply(classificar_risco)
+
+    # Detectar colunas de sexo e idade (robusto)
+    col_genero = [col for col in df_resultado.columns if 'gender' in col.lower()]
+    col_idade = [col for col in df_resultado.columns if 'age' in col.lower()]
 
     if col_genero:
-        def map_sexo(x):
-            x_str = str(x).strip().lower()
-            if x_str in ['1', 'm', 'male', 'masculino']:
-                return 'Homem'
-            if x_str in ['0', 'f', 'female', 'feminino']:
-                return 'Mulher'
-            return 'Desconhecido'
-        df_pred['Sexo'] = df_pred[col_genero[0]].apply(map_sexo)
-        print(df_pred[col_genero[0]].unique())
-        print(df_pred['Sexo'].value_counts())
+        df_resultado['Sexo'] = df_resultado[col_genero[0]].apply(lambda x: 'Homem' if x == 1 else 'Mulher')
     else:
-            df_pred['Sexo'] = 'Desconhecido'
-    if col_idade:
-        df_pred['Idade'] = df_pred[col_idade[0]].astype(int)
-        df_pred['Faixa Etária'] = pd.cut(df_pred['Idade'], bins=[17, 30, 45, 60, 120],
-                                         labels=['18–30', '31–45', '46–60', '60+'])
-    else:
-        df_pred['Faixa Etária'] = 'Desconhecida'
+        df_resultado['Sexo'] = 'Indefinido'
 
-    # Agrupar por Sexo, Faixa Etária e Risco
-    agrupado = df_pred.groupby(['Sexo', 'Faixa Etária', 'Risco']).agg({
-    'Probabilidade': 'mean',
-    'Churn': 'count'
+    if col_idade:
+        df_resultado['Idade'] = df_resultado[col_idade[0]].astype(int)
+        df_resultado['Faixa Etária'] = pd.cut(df_resultado['Idade'], bins=[17, 30, 45, 60, 120],
+                                            labels=['18–30', '31–45', '46–60', '60+'])
+    else:
+        df_resultado['Faixa Etária'] = 'Indefinida'
+
+    # Agrupar por perfil
+    agrupado = df_resultado.groupby(['Sexo', 'Faixa Etária', 'Risco']).agg({
+        'Probabilidade': 'mean',
+        'Churn': ['count', 'sum']
     }).reset_index()
-    agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes']
+
+    agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes', 'Cancelamentos']
     agrupado['Probabilidade Média (%)'] = (agrupado['Probabilidade Média'] * 100).round(2)
     agrupado = agrupado.drop(columns=['Probabilidade Média'])
 

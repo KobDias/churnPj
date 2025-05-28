@@ -11,7 +11,6 @@ import joblib
 from models import Documentos
 import pandas as pd
 import matplotlib.pyplot as plt
-import  base64
 
 predicao_bp = Blueprint('predicao', __name__, template_folder='templates', url_prefix='/predicao')
 
@@ -90,10 +89,9 @@ def views(id):
 
         X = preprocess_input(input_df, columns)
 
-        preds = model.predict(X)
-        probs = model.predict_proba(X)[:, 1]
-
-        df_pred = gerar_df_pred(X, preds, probs)
+        preds, probs = processa_modelo(input_df)
+        df_pred = gerar_df_pred(input_df, preds, probs)
+        
         pred_path = os.path.join('app', 'static', 'uploads', 'sys', 'pred', f'{nome}_pred.csv')
         df_pred.to_csv(pred_path, index=False, encoding='utf-8')
         doc.caminho_pred = pred_path
