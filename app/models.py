@@ -1,4 +1,4 @@
-from sqlalchemy import DateTime, Integer, String, Column
+from sqlalchemy import Integer, String, Column
 from flask_login import UserMixin
 from db import db
 
@@ -18,13 +18,4 @@ class Documentos(db.Model):
     caminho_pred = Column(String(120), nullable=True)
     caminho_grupos = Column(String(120), nullable=True)
     nome_documento = Column(String(120), nullable=False)
-    data_criacao = db.Column(db.DateTime, default=db.func.current_timestamp())
-    graph = db.relationship('Graficos', backref='documentos')
-
-class Graficos(db.Model):
-    __tablename__ = 'graficos'
-    id = Column(Integer, primary_key=True)
-    documentos_id = Column(Integer, db.ForeignKey('documentos.id'), nullable=False)
-    caminho_graph_importance = Column(String(120), nullable=False)
-    caminho_graph_risco = Column(String(120), nullable=False)
     data_criacao = db.Column(db.DateTime, default=db.func.current_timestamp())

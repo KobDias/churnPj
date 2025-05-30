@@ -1,8 +1,7 @@
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from db import db
-from models import User, Documentos, Graficos
+from models import User, Documentos
 from blueprints.auth.auth_blueprint import auth_bp
 from blueprints.user.user_blueprint import user_bp
 from blueprints.predicao.predicao_blueprint import predicao_bp

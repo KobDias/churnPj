@@ -1,16 +1,12 @@
-from flask import Blueprint, current_app, flash, render_template, request, redirect, url_for
+from flask import Blueprint, flash, render_template, request, redirect, url_for
 from flask_login import current_user, login_required
-from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
 from db import db
 from werkzeug.utils import secure_filename
 import os
-from datetime import datetime
-from .processamento import gerar_df_pred, grupos_pred, processa_modelo, preprocess_input, gerar_grafico
+from .processamento import gerar_df_pred, gerar_importancia, grupos_pred, processa_modelo
 import joblib
 from models import Documentos
 import pandas as pd
-import matplotlib.pyplot as plt
 
 predicao_bp = Blueprint('predicao', __name__, template_folder='templates', url_prefix='/predicao')
 
@@ -83,14 +79,19 @@ def views(id):
                 os.remove(grafico_Risco_path)
 
         input_df = pd.read_csv(caminho)
-        data = joblib.load('app/blueprints/predicao/modelo_churn_rf_bank_telco.pkl')
+        modelo_path = os.path.join(
+        os.path.dirname(__file__),
+        'static', 'models', 'modelo_churn_rf_bank_telco.pkl')
+        data = joblib.load(modelo_path)
         model = data['model']
         columns = data['columns']
 
-        X = preprocess_input(input_df, columns)
+        X = processa_modelo(input_df)
 
-        preds, probs = processa_modelo(input_df)
-        df_pred = gerar_df_pred(input_df, preds, probs)
+        preds = model.predict(X)
+        probs = model.predict_proba(X)[:, 1]
+
+        df_pred = gerar_df_pred(X, preds, probs)
         
         pred_path = os.path.join('app', 'static', 'uploads', 'sys', 'pred', f'{nome}_pred.csv')
         df_pred.to_csv(pred_path, index=False, encoding='utf-8')
@@ -98,7 +99,7 @@ def views(id):
 
         agrupado = grupos_pred(df_pred, nome)
         
-        agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes']
+        agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes', 'Cancelamentos']
         agrupado['Probabilidade Média (%)'] = (agrupado['Probabilidade Média'] * 100).round(2)
         agrupado = agrupado.drop(columns=['Probabilidade Média'])
 
@@ -110,13 +111,12 @@ def views(id):
 
         db.session.commit()
 
-        gerar_grafico(df_pred, nome, model, columns)
+        gerar_importancia(model, X, nome)
         return redirect(url_for('predicao.views', id=doc.id)) #redireciona para a view do documento
     #get
     print(nome)
     fig_importance = url_for('static', filename=f'uploads/sys/graphs/{nome}_importante.png')
-    fig_riscos = url_for('static', filename=f'uploads/sys/graphs/{nome}_riscos.png')
-    if fig_importance and fig_riscos:
-        return render_template('view.html', doc=doc, predito=predito, nome=nome, caminho=caminho, fig_importance=fig_importance, fig_riscos=fig_riscos)
+    if fig_importance:
+        return render_template('view.html', doc=doc, predito=predito, nome=nome, caminho=caminho, fig_importance=fig_importance)
     return render_template('view.html', doc=doc, nome=nome, predito=predito, caminho=caminho)
     
