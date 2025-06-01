@@ -59,9 +59,10 @@ def padronizar_coluna_alvo(df):
     raise ValueError("Coluna alvo (churn) não encontrada.")
 
 def preprocess(df, id_columns=[]):
+    # Remover colunas de identificação
     df = df.drop(columns=id_columns, errors='ignore')
 
-    # Padroniza nomes comuns
+    # Padronizar nomes de colunas
     renomear = {
         'idade': 'Age',
         'idade_cliente': 'Age',
@@ -69,19 +70,37 @@ def preprocess(df, id_columns=[]):
         'genero': 'Gender',
         'salario': 'EstimatedSalary',
         'mensalidade': 'MonthlyCharges',
-        'tempo': 'tenure'
+        'tempo': 'Tenure',
+        'churn': 'Churn'
     }
     df.rename(columns={col: renomear.get(col.lower(), col) for col in df.columns}, inplace=True)
 
-    # Converte colunas categóricas (erradas como string) para float
+    # Converter valores categóricos
+    if 'Gender' in df.columns:
+        df['Gender'] = df['Gender'].apply(lambda x: 1 if x.lower() in ['homem', 'male'] else 0)
+    if 'Churn' in df.columns:
+        df['Churn'] = df['Churn'].apply(lambda x: 1 if str(x).lower() in ['sim', 'yes'] else 0)
+
+    # Converter colunas numéricas
     for col in df.columns:
-        if df[col].dtype == 'object':
+        if col not in ['Gender', 'Churn'] and df[col].dtype == 'object':
             df[col] = pd.to_numeric(df[col], errors='coerce')
 
+    # Remover linhas com muitos valores ausentes
     df = df.dropna(thresh=int(len(df.columns) * 0.7))
-    cat_cols = df.select_dtypes(include='object').columns
-    df = pd.get_dummies(df, columns=cat_cols, drop_first=True)
 
+    # Adicionar colunas ausentes com valores padrão (se necessário)
+    expected_columns = ['Age', 'Balance', 'Contract', 'CreditScore', 'Dependents', 'DeviceProtection',
+                        'EstimatedSalary', 'Gender', 'Geography', 'HasCrCard', 'InternetService',
+                        'IsActiveMember', 'MonthlyCharges', 'MultipleLines', 'NumOfProducts',
+                        'OnlineBackup', 'OnlineSecurity', 'PaperlessBilling', 'Partner', 'PaymentMethod',
+                        'PhoneService', 'SeniorCitizen', 'StreamingMovies', 'StreamingTV', 'TechSupport',
+                        'Tenure', 'TotalCharges']
+    for col in expected_columns:
+        if col not in df.columns:
+            df[col] = 0  # Adicionar colunas ausentes com valor padrão
+
+    # Retornar DataFrame processado
     return df
 
 def processa_modelo(input_df, modelo_path=None):
@@ -113,41 +132,41 @@ def grupos_pred(df_resultado, nome):
     possiveis_generos = ['gender', 'sexo', 'genero']
     col_genero = [col for col in df_resultado.columns if any(g in col.lower() for g in possiveis_generos)]
 
-    # Procurar colunas de idade (todas as variações)
-    possiveis_idades = ['age', 'idade', 'idade_cliente']
-    col_idade = [col for col in df_resultado.columns if any(i in col.lower() for i in possiveis_idades)]
-
     # Gênero
     if col_genero:
-        # Se for categórico, tenta converter para 1=Homem, 0=Mulher, senão mantém string
-        if df_resultado[col_genero[0]].dtype in ['int64', 'float64']:
-            df_resultado['Sexo'] = df_resultado[col_genero[0]].apply(lambda x: 'Homem' if x == 1 else 'Mulher')
+        col = col_genero[0]
+        # Se for booleano, 1=Homem, 0=Mulher (ajuste conforme seu padrão)
+        if df_resultado[col].dropna().isin([0,1]).all():
+            df_resultado['Sexo'] = df_resultado[col].apply(lambda x: 'Homem' if x == 1 else 'Mulher')
         else:
-            df_resultado['Sexo'] = df_resultado[col_genero[0]].astype(str).str.capitalize()
+            df_resultado['Sexo'] = df_resultado[col].astype(str).str.capitalize()
     else:
         df_resultado['Sexo'] = 'Indefinido'
 
     # Idade
+    possiveis_idades = ['age', 'idade', 'idade_cliente']
+    col_idade = [col for col in df_resultado.columns if any(i in col.lower() for i in possiveis_idades)]
     if col_idade:
         df_resultado['Idade'] = df_resultado[col_idade[0]].astype(float).astype(int)
-        df_resultado['Faixa Etária'] = pd.cut(
+        df_resultado['Faixa Etaria'] = pd.cut(
             df_resultado['Idade'],
             bins=[17, 30, 45, 60, 120],
-            labels=['18–30', '31–45', '46–60', '60+']
+            labels=['18 a 30', '31 a 45', '46 a 60', '60+']
         )
     else:
-        df_resultado['Faixa Etária'] = 'Indefinida'
+        df_resultado['Faixa Etaria'] = 'Indefinida'
 
     # Agrupar por perfil
-    agrupado = df_resultado.groupby(['Sexo', 'Faixa Etária', 'Risco']).agg({
+    agrupado = df_resultado.groupby(['Sexo', 'Faixa Etaria', 'Risco'], observed=True).agg({
         'Probabilidade': 'mean',
         'Churn': ['count', 'sum']
     }).reset_index()
 
-    agrupado.columns = ['Sexo', 'Faixa Etária', 'Risco', 'Probabilidade Média', 'Total Clientes', 'Cancelamentos']
-    agrupado['Probabilidade Média (%)'] = (agrupado['Probabilidade Média'] * 100).round(2)
-    agrupado = agrupado.drop(columns=['Probabilidade Média'])
+    agrupado.columns = ['Sexo', 'Faixa Etaria', 'Risco', 'Probabilidade Media', 'Total Clientes', 'Cancelamentos']
+    agrupado = agrupado[agrupado['Total Clientes'] > 0]
+    agrupado = agrupado.dropna(subset=['Total Clientes'])
+    agrupado['Probabilidade Media (%)'] = (agrupado['Probabilidade Media'] * 100).round(2)
+    agrupado = agrupado.drop(columns=['Probabilidade Media'])
 
-    # Salvar para download
     agrupado.to_csv(f'app/static/uploads/sys/pred/{nome}_grupos_risco.csv', index=False, encoding='utf-8')
     return agrupado
