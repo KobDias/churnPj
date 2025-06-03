@@ -53,6 +53,36 @@ def upload():
     #GET
     return render_template('upload.html')
 
+@predicao_bp.route('/delete/<int:id>', methods=['POST'])
+@login_required
+def delete(id):
+    doc = db.session.query(Documentos).filter_by(id=id).first()
+    if not doc or doc.user_id != current_user.id:
+        flash('Documento não encontrado ou acesso negado.')
+        return redirect(url_for('home'))
+
+    # Remove arquivos associados
+    if doc.caminho_pred and os.path.exists(doc.caminho_pred):
+        os.remove(doc.caminho_pred)
+    if doc.caminho_grupos and os.path.exists(doc.caminho_grupos):
+        os.remove(doc.caminho_grupos)
+    if doc.caminho_origem and os.path.exists(doc.caminho_origem):
+        os.remove(doc.caminho_origem)
+
+    # Remove gráficos se existirem
+    nome_base = doc.nome_documento
+    grafico_Importancia_path = os.path.join('app', 'static', 'uploads', 'sys', 'graphs', f'{nome_base}_importante.png')
+    grafico_Risco_path = os.path.join('app', 'static', 'uploads', 'sys', 'graphs', f'{nome_base}_riscos.png')
+    if os.path.exists(grafico_Importancia_path):
+        os.remove(grafico_Importancia_path)
+    if os.path.exists(grafico_Risco_path):
+        os.remove(grafico_Risco_path)
+
+    db.session.delete(doc)
+    db.session.commit()
+    flash('Documento deletado com sucesso.')
+    return redirect(url_for('home'))
+
 @predicao_bp.route('/view/<int:id>', methods=['GET', 'POST'])
 @login_required
 def views(id):

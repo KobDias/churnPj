@@ -74,6 +74,11 @@
         <div class="text-center mt-4">
             <a href="{{ url_for('home') }}" class="btn btn-outline-secondary rounded-pill px-4">Voltar</a>
         </div>
+        <div class="text-center mt-4">
+            <form action="{{ url_for('predicao.delete', id=doc.id) }}" method="post">
+                <button type="submit" class="btn btn-danger">Deletar Documento</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
